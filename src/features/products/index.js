@@ -1,0 +1,1 @@
+export {default as ProductList} from './pages/productList'

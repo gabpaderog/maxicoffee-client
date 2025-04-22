@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body{
+  background-color: #fbf8f2;
+  color: #252324;
+  font-family: 'Inter', sans-serif;
+}
+
+
+@layer utilities{
+  .container{
+    @apply max-w-6xl;
+  }
+}
