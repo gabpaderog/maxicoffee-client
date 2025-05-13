@@ -7,6 +7,8 @@ import { CartList } from './features/cart'
 import { Hero } from './features/hero'
 import ProtectedLayout from './layout/ProtectedLayout'
 import PublicLayout from './layout/PublicLayout'
+import ForgotPassword from './features/auth/pages/forgotPassword'
+import ResetPassword from './features/auth/pages/resetPassword'
 
 const App = () => {
   const router = createBrowserRouter(createRoutesFromElements(
@@ -20,6 +22,8 @@ const App = () => {
         <Route path='/signin' element={<SignIn/>}/>
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/email-verification' element={<EmailVerification/>}/>
+        <Route path='/forgotpassword' element={<ForgotPassword/>}/>
+        <Route path='/resetpassword' element={<ResetPassword/>}/>
       </Route>{/* 🔥 Catch-all for unmatched routes */}
       <Route path="*" element={<Navigate to="/" replace />} />
 

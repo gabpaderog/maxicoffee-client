@@ -20,6 +20,9 @@ const Header = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false)
   const isAuthenticated = !!accessToken
   const userName = isAuthenticated ? getUserNameFromToken() : null
+  const [cartOpen, setCartOpen] = useState(false)
+  const cartBtnRef = useRef(null)
+  const cartMenuRef = useRef(null)
 
   const navigate = useNavigate()
 
@@ -40,6 +43,22 @@ const Header = () => {
       clearInterval(interval)
     }
   }, [])
+
+  useEffect(() => {
+    if (!cartOpen) return
+    const handleClickOutside = (e) => {
+      if (
+        cartBtnRef.current &&
+        !cartBtnRef.current.contains(e.target) &&
+        cartMenuRef.current &&
+        !cartMenuRef.current.contains(e.target)
+      ) {
+        setCartOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [cartOpen])
 
   // Close menu on navigation
   const handleNavClick = () => setMenuOpen(false)
@@ -71,6 +90,53 @@ const Header = () => {
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [profileMenuOpen])
+
+  const CartItems = () => {
+    const [items, setItems] = useState([])
+  
+    useEffect(() => {
+      const storedCart = JSON.parse(localStorage.getItem('cart')) || []
+      setItems(storedCart)
+    }, [])
+  
+    const removeItem = (indexToRemove) => {
+      const updatedCart = items.filter((_, i) => i !== indexToRemove)
+      setItems(updatedCart)
+      localStorage.setItem('cart', JSON.stringify(updatedCart))
+    }
+  
+    if (items.length === 0) return <p className="text-sm text-gray-500">Cart is empty.</p>
+  
+    return (
+      <ul className="divide-y divide-gray-200 max-h-60 overflow-y-auto space-y-2">
+        {items.map((item, index) => (
+          <li key={index} className="py-2 text-sm text-[#4B2E19]">
+            <div className="flex justify-between items-start">
+              <div>
+                <p className="font-medium">{item.name}</p>
+                <p className="text-xs text-gray-600">₱{item.basePrice}</p>
+                {item.addons && item.addons.length > 0 && (
+                  <ul className="mt-1 text-xs text-gray-500">
+                    {item.addons.map((addon, i) => (
+                      <li key={i}>{addon.name} (+₱{addon.price})</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              <button
+                onClick={() => removeItem(index)}
+                className="text-red-500 text-xs hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  
+  
 
   return (
     <header className="w-full bg-[#6F4E37] py-4 shadow-md sticky top-0 z-50">
@@ -130,7 +196,34 @@ const Header = () => {
               </Link>
             </>
           ) : (
-            <div className="relative">
+            <div className="relative flex gap-2 items-center">
+              <button
+                ref={cartBtnRef}
+                className="relative"
+                onClick={() => setCartOpen((prev) => !prev)}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-6 h-6 text-[#D7CCC0] hover:text-[#A67B5B] transition"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.6 8m1.6-8L5.4 5M7 13h10l-1.6 8m-6.8 0a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z" />
+                </svg>
+              </button>
+
+              {cartOpen && (
+                <div
+                  ref={cartMenuRef}
+                  className="absolute top-8 right-0 mt-2 w-72 bg-white rounded shadow-lg z-50 p-4"
+                >
+                  <h3 className="text-[#4B2E19] font-semibold mb-2">Your Cart</h3>
+                  <CartItems />
+                  <Link to="/cart" onClick={() => setCartOpen(!setCartOpen)} className='flex justify-center text-sm text-white rounded py-2 bg-[#4B2E19]'>Checkout</Link>
+                </div>
+              )}
               <button
                 ref={profileBtnRef}
                 className="flex items-center gap-2 focus:outline-none"
@@ -149,7 +242,7 @@ const Header = () => {
               {profileMenuOpen && (
                 <div
                   ref={profileMenuRef}
-                  className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg z-50"
+                  className="absolute top-8 right-0 mt-2 w-40 bg-white rounded shadow-lg z-50"
                 >
                   <Link
                     to="/profile"

@@ -1,7 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowRight02Icon, CoffeeBeansIcon } from '@hugeicons/core-free-icons'
 import React, { useState } from "react"
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { signIn } from '../auth.api'
 import {jwtDecode} from "jwt-decode"
 
@@ -91,6 +91,11 @@ const Signin = () => {
           {error && (
             <div className="text-red-600 text-sm text-center">{error}</div>
           )}
+          <div className="flex justify-end mt-2">
+            <Link to="/forgotpassword" className="text-[#b68973] text-sm font-medium hover:underline">
+              Forgot Password?
+            </Link>
+          </div>
           <button
             type="submit"
             className="flex items-center gap-3 bg-[#b68973] hover:bg-[#a1745e] text-white font-bold px-8 py-3 border-2 border-[#7c5e3c] uppercase tracking-wider shadow-lg transition rounded w-full justify-center"
@@ -102,9 +107,9 @@ const Signin = () => {
         </form>
         <p className="mt-6 text-center text-sm text-[#7c5e3c]">
           Don't have an account?{" "}
-          <a href="/signup" className="text-[#b68973] font-semibold hover:underline">
+          <Link href="/signup" className="text-[#b68973] font-semibold hover:underline">
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

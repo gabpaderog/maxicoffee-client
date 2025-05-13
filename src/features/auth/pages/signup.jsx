@@ -2,6 +2,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import { ArrowRight02Icon, CoffeeBeansIcon } from '@hugeicons/core-free-icons'
 import React, { useState } from "react"
 import { signUp } from "../auth.api" // Adjust the import path if needed
+import { Link } from 'react-router';
 
 const Signup = () => {
   const [form, setForm] = useState({
@@ -145,9 +146,9 @@ const Signup = () => {
         {!verificationSent && (
           <p className="mt-6 text-center text-sm text-[#7c5e3c]">
             Already have an account?{" "}
-            <a href="/signin" className="text-[#b68973] font-semibold hover:underline">
+            <Link href="/signin" className="text-[#b68973] font-semibold hover:underline">
               Sign In
-            </a>
+            </Link>
           </p>
         )}
       </div>
